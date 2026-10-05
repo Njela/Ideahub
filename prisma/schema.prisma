@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String     @id @default(cuid())
+  name        String
+  githubLogin String     @unique
+  image       String?
+  ideas       Idea[]
+  revisions   Revision[]
+}
+
+model Idea {
+  id           String          @id @default(cuid())
+  title        String
+  description  String          @default("")
+  status       String          @default("PROPOSED") // PROPOSED | IN_REVIEW | APPROVED | IN_PROGRESS | DONE | SHELVED
+  repoFullName String?         @unique              // e.g. "my-org/my-app"
+  version      Int             @default(1)          // optimistic lock
+  createdById  String
+  createdBy    User            @relation(fields: [createdById], references: [id])
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  revisions    Revision[]
+  events       ActivityEvent[]
+}
+
+// Append-only: one row per save, with only the fields that changed.
+model Revision {
+  id        String   @id @default(cuid())
+  ideaId    String
+  idea      Idea     @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id])
+  version   Int
+  changes   Json     // { field: { from, to } }
+  note      String?
+  createdAt DateTime @default(now())
+  @@index([ideaId, createdAt])
+}
+
+// Mirrored from GitHub webhooks.
+model ActivityEvent {
+  id         String   @id @default(cuid())
+  deliveryId String   @unique // X-GitHub-Delivery, makes webhook retries idempotent
+  ideaId     String
+  idea       Idea     @relation(fields: [ideaId], references: [id], onDelete: Cascade)
+  type       String   // push | pr_opened | pr_merged | pr_closed | issue_opened | issue_closed | release
+  actor      String   // GitHub login
+  title      String
+  url        String
+  createdAt  DateTime @default(now())
+  @@index([ideaId, createdAt])
+}
