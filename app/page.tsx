@@ -1,12 +1,50 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
+
+const IDEAS_DATA = [
+  {
+    id: 1,
+    title: "ACME Customer Sales Product",
+    author: "Helga Windle",
+    created: "6mo ago",
+    statusText: "Submitted",
+    statusIcon: "🚀",
+    votes: 18,
+    tags: ["Increase Innovation"]
+  },
+  {
+    id: 2,
+    title: "Green roof on HQ",
+    author: "Troy Mccoy (Team Member)",
+    created: "9mo ago",
+    statusText: "Need more information",
+    statusIcon: "ℹ️",
+    votes: 10,
+    tags: ["Increase Innovation"]
+  }
+];
 
 export default function Home() {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredIdeas = IDEAS_DATA.filter((idea) => 
+    idea.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    idea.author.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="ideas-layout">
       <div className="main-content">
         <div className="page-header" style={{justifyContent: 'flex-end'}}>
           <div className="search-box">
-            <input type="text" placeholder="Search" />
+            <input 
+              type="text" 
+              placeholder="Search" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
             <span className="search-icon">🔍</span>
           </div>
         </div>
@@ -44,47 +82,39 @@ export default function Home() {
             <label>Sort by</label>
             <select>
               <option>Most recent</option>
-              <option>Most voted</option>
               <option>Oldest</option>
             </select>
           </div>
         </div>
 
-        <ul className="idea-list">
-          <li className="idea-item">
-            <div className="vote-box">
-              <button className="vote-btn">^</button>
-              <span className="vote-count">18</span>
-              <button className="vote-btn">v</button>
-            </div>
-            <div className="idea-details">
-              <h3><Link href="/ideas/1" style={{textDecoration: 'none', color: 'inherit'}}>ACME Customer Sales Product</Link></h3>
-              <div className="idea-meta">
-                by Helga Windle • Created 6mo ago • <span className="status"><span className="status-icon">🚀</span> Submitted</span>
-              </div>
-              <div className="idea-tags">
-                <span className="tag">Increase Innovation</span>
-              </div>
-            </div>
-          </li>
-
-          <li className="idea-item">
-            <div className="vote-box">
-              <button className="vote-btn">^</button>
-              <span className="vote-count">10</span>
-              <button className="vote-btn">v</button>
-            </div>
-            <div className="idea-details">
-              <h3><Link href="/ideas/2" style={{textDecoration: 'none', color: 'inherit'}}>Green roof on HQ</Link></h3>
-              <div className="idea-meta">
-                by Troy Mccoy (Team Member) • Created 9mo ago • <span className="status"><span className="status-icon">ℹ️</span> Need more information</span>
-              </div>
-              <div className="idea-tags">
-                <span className="tag">Increase Innovation</span>
-              </div>
-            </div>
-          </li>
-        </ul>
+        {filteredIdeas.length === 0 ? (
+          <div style={{ padding: '40px', textAlign: 'center', color: 'var(--muted)' }}>
+            No ideas found matching "{searchQuery}"
+          </div>
+        ) : (
+          <ul className="idea-list">
+            {filteredIdeas.map((idea) => (
+              <li className="idea-item" key={idea.id}>
+                <div className="vote-box">
+                  <button className="vote-btn">^</button>
+                  <span className="vote-count">{idea.votes}</span>
+                  <button className="vote-btn">v</button>
+                </div>
+                <div className="idea-details">
+                  <h3><Link href={`/ideas/${idea.id}`} style={{textDecoration: 'none', color: 'inherit'}}>{idea.title}</Link></h3>
+                  <div className="idea-meta">
+                    by {idea.author} • Created {idea.created} • <span className="status"><span className="status-icon">{idea.statusIcon}</span> {idea.statusText}</span>
+                  </div>
+                  <div className="idea-tags">
+                    {idea.tags.map(tag => (
+                      <span className="tag" key={tag}>{tag}</span>
+                    ))}
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
       <div className="sidebar">

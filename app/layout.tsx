@@ -6,12 +6,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <body>
         <div className="app-wrapper">
           <header className="app-header">
-            <div className="header-icons" style={{marginLeft: "auto"}}>
-              <span className="icon">🔍</span>
-              <span className="icon">💬</span>
-              <span className="icon">❓</span>
-              <span className="icon">⚙️</span>
-            </div>
+            {/* Icons removed */}
           </header>
           <main>{children}</main>
         </div>
