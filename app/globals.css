@@ -71,10 +71,10 @@ main {
 .ideas-layout {
   display: flex;
   gap: 40px;
-  padding: 32px 5%;
+  padding: 32px 24px;
   width: 100%;
   margin: 0 auto;
-  max-width: 1600px; /* Cap at extremely large screens but allow it to stretch normally */
+  max-width: 1000px;
 }
 
 @media (max-width: 768px) {
@@ -99,8 +99,10 @@ main {
 /* Header & Search */
 .page-header {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
+  gap: 16px;
   margin-bottom: 24px;
 }
 .page-header h1 {
@@ -152,6 +154,7 @@ main {
 /* Filters */
 .filters-bar {
   display: flex;
+  flex-wrap: wrap;
   background: var(--bg);
   padding: 16px;
   border: 1px solid var(--line);
