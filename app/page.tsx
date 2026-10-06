@@ -9,8 +9,10 @@ const IDEAS_DATA = [
     title: "ACME Customer Sales Product",
     author: "Helga Windle",
     created: "6mo ago",
-    statusText: "Submitted",
+    statusText: "Proposed",
     statusIcon: "🚀",
+    category: "Business",
+    icon: "💼",
     votes: 18,
     tags: ["Increase Innovation"]
   },
@@ -19,8 +21,10 @@ const IDEAS_DATA = [
     title: "Green roof on HQ",
     author: "Troy Mccoy (Team Member)",
     created: "9mo ago",
-    statusText: "Need more information",
+    statusText: "In Review",
     statusIcon: "ℹ️",
+    category: "Health",
+    icon: "🌿",
     votes: 10,
     tags: ["Increase Innovation"]
   }
@@ -29,22 +33,34 @@ const IDEAS_DATA = [
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("All Ideas");
+  const [statusFilter, setStatusFilter] = useState("Any status");
+  const [categoryFilter, setCategoryFilter] = useState("All categories");
+  const [sortBy, setSortBy] = useState("Most recent");
 
   // Mock current user for demonstration purposes
   const CURRENT_USER = "Helga Windle";
 
   const filteredIdeas = IDEAS_DATA.filter((idea) => {
     // 1. Filter by Tab
-    if (activeTab === "My Ideas" && idea.author !== CURRENT_USER) {
-      return false;
-    }
+    if (activeTab === "My Ideas" && idea.author !== CURRENT_USER) return false;
     
-    // 2. Filter by Search Query
+    // 2. Filter by Status
+    if (statusFilter !== "Any status" && idea.statusText !== statusFilter) return false;
+
+    // 3. Filter by Category
+    if (categoryFilter !== "All categories" && idea.category !== categoryFilter) return false;
+
+    // 4. Filter by Search Query
     const matchesSearch = 
       idea.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       idea.author.toLowerCase().includes(searchQuery.toLowerCase());
       
     return matchesSearch;
+  }).sort((a, b) => {
+    if (sortBy === "Oldest") {
+      return a.id - b.id; // Using ID as proxy for age
+    }
+    return b.id - a.id; // Most recent
   });
 
   return (
@@ -80,7 +96,7 @@ export default function Home() {
         <div className="filters-bar">
           <div className="filter-group">
             <label>Status</label>
-            <select>
+            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
               <option>Any status</option>
               <option>Proposed</option>
               <option>In Review</option>
@@ -92,7 +108,7 @@ export default function Home() {
           </div>
           <div className="filter-group">
             <label>Category</label>
-            <select>
+            <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
               <option>All categories</option>
               <option>Business</option>
               <option>Technology</option>
@@ -103,7 +119,7 @@ export default function Home() {
           </div>
           <div className="filter-group sort-by">
             <label>Sort by</label>
-            <select>
+            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
               <option>Most recent</option>
               <option>Oldest</option>
             </select>
@@ -118,10 +134,8 @@ export default function Home() {
           <ul className="idea-list">
             {filteredIdeas.map((idea) => (
               <li className="idea-item" key={idea.id}>
-                <div className="vote-box">
-                  <button className="vote-btn">^</button>
-                  <span className="vote-count">{idea.votes}</span>
-                  <button className="vote-btn">v</button>
+                <div style={{ width: '60px', height: '60px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', background: 'var(--bg)', border: '1px solid var(--line)', borderRadius: '8px', flexShrink: 0 }}>
+                  {idea.icon}
                 </div>
                 <div className="idea-details">
                   <h3><Link href={`/ideas/${idea.id}`} style={{textDecoration: 'none', color: 'inherit'}}>{idea.title}</Link></h3>
@@ -129,6 +143,7 @@ export default function Home() {
                     by {idea.author} • Created {idea.created} • <span className="status"><span className="status-icon">{idea.statusIcon}</span> {idea.statusText}</span>
                   </div>
                   <div className="idea-tags">
+                    <span className="tag" style={{ background: 'var(--accent)', color: 'var(--bg)' }}>{idea.category}</span>
                     {idea.tags.map(tag => (
                       <span className="tag" key={tag}>{tag}</span>
                     ))}
