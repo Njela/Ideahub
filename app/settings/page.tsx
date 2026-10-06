@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState({
@@ -11,6 +11,36 @@ export default function SettingsPage() {
     language: "english",
     visibility: "public"
   });
+
+  // Initialize theme from localStorage
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      setSettings(s => ({ ...s, theme: savedTheme }));
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setSettings(s => ({ ...s, theme: 'dark' }));
+    }
+  }, []);
+
+  const handleThemeChange = (newTheme: string) => {
+    setSettings({ ...settings, theme: newTheme });
+    
+    if (newTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else if (newTheme === 'light') {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    } else {
+      // system
+      localStorage.removeItem('theme');
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+  };
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
@@ -24,7 +54,7 @@ export default function SettingsPage() {
           <h1>Platform Settings</h1>
         </div>
 
-        <form onSubmit={handleSave} style={{ background: 'white', padding: '32px', borderRadius: '8px', border: '1px solid var(--line)' }}>
+        <form onSubmit={handleSave} style={{ background: 'var(--bg)', padding: '32px', borderRadius: '8px', border: '1px solid var(--line)' }}>
           
           <h3 style={{ borderBottom: '1px solid var(--line)', paddingBottom: '8px', marginBottom: '24px' }}>Preferences</h3>
           
@@ -33,8 +63,8 @@ export default function SettingsPage() {
               <label style={{ display: 'block', marginBottom: '8px', color: 'var(--muted)', fontSize: '0.9rem' }}>Theme</label>
               <select 
                 value={settings.theme}
-                onChange={e => setSettings({...settings, theme: e.target.value})}
-                style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', background: 'white' }}
+                onChange={e => handleThemeChange(e.target.value)}
+                style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', background: 'var(--bg)', color: 'var(--fg)' }}
               >
                 <option value="light">Light Theme (Wooden)</option>
                 <option value="dark">Dark Theme</option>
@@ -46,7 +76,7 @@ export default function SettingsPage() {
               <select 
                 value={settings.language}
                 onChange={e => setSettings({...settings, language: e.target.value})}
-                style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', background: 'white' }}
+                style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', background: 'var(--bg)', color: 'var(--fg)' }}
               >
                 <option value="english">English (US)</option>
                 <option value="spanish">Español</option>
@@ -73,7 +103,7 @@ export default function SettingsPage() {
             <select 
               value={settings.emailDigest}
               onChange={e => setSettings({...settings, emailDigest: e.target.value})}
-              style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', background: 'white' }}
+              style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', background: 'var(--bg)', color: 'var(--fg)' }}
             >
               <option value="daily">Daily Summary</option>
               <option value="weekly">Weekly Summary</option>
@@ -88,7 +118,7 @@ export default function SettingsPage() {
             <select 
               value={settings.visibility}
               onChange={e => setSettings({...settings, visibility: e.target.value})}
-              style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', background: 'white' }}
+              style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', background: 'var(--bg)', color: 'var(--fg)' }}
             >
               <option value="public">Public (Entire Company)</option>
               <option value="private">Private (Only my team)</option>

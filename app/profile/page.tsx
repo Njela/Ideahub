@@ -25,7 +25,7 @@ export default function ProfilePage() {
           <h1>Team Member Profile</h1>
         </div>
 
-        <form onSubmit={handleSave} style={{ background: 'white', padding: '32px', borderRadius: '8px', border: '1px solid var(--line)' }}>
+        <form onSubmit={handleSave} style={{ background: 'var(--bg)', padding: '32px', borderRadius: '8px', border: '1px solid var(--line)' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
             <div className="filter-group">
               <label style={{ display: 'block', marginBottom: '8px', color: 'var(--muted)', fontSize: '0.9rem' }}>First Name</label>
@@ -33,7 +33,7 @@ export default function ProfilePage() {
                 type="text" 
                 value={formData.firstName}
                 onChange={e => setFormData({...formData, firstName: e.target.value})}
-                style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px' }} 
+                style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', background: 'var(--bg)', color: 'var(--fg)' }} 
               />
             </div>
             <div className="filter-group">
@@ -42,7 +42,7 @@ export default function ProfilePage() {
                 type="text" 
                 value={formData.lastName}
                 onChange={e => setFormData({...formData, lastName: e.target.value})}
-                style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px' }} 
+                style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', background: 'var(--bg)', color: 'var(--fg)' }} 
               />
             </div>
           </div>
@@ -53,7 +53,7 @@ export default function ProfilePage() {
               type="email" 
               value={formData.email}
               onChange={e => setFormData({...formData, email: e.target.value})}
-              style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px' }} 
+              style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', background: 'var(--bg)', color: 'var(--fg)' }} 
             />
           </div>
 
@@ -64,7 +64,7 @@ export default function ProfilePage() {
                 type="text" 
                 value={formData.role}
                 onChange={e => setFormData({...formData, role: e.target.value})}
-                style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px' }} 
+                style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', background: 'var(--bg)', color: 'var(--fg)' }} 
               />
             </div>
             <div className="filter-group">
@@ -72,7 +72,7 @@ export default function ProfilePage() {
               <select 
                 value={formData.department}
                 onChange={e => setFormData({...formData, department: e.target.value})}
-                style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', background: 'white' }}
+                style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', background: 'var(--bg)', color: 'var(--fg)' }}
               >
                 <option>Sales & Marketing</option>
                 <option>Engineering</option>
@@ -89,7 +89,7 @@ export default function ProfilePage() {
               rows={4}
               value={formData.bio}
               onChange={e => setFormData({...formData, bio: e.target.value})}
-              style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', resize: 'vertical' }} 
+              style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', background: 'var(--bg)', color: 'var(--fg)', resize: 'vertical' }} 
             ></textarea>
           </div>
 
