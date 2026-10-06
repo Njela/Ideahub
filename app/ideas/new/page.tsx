@@ -21,43 +21,43 @@ export default function NewIdeaPage() {
 
         <div className="form-group">
           <label>Goal</label>
-          <select><option>Security</option><option>Engagement</option><option>Revenue</option></select>
+          <textarea placeholder="Define the importance of the idea being created..." required style={{ minHeight: '80px', width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', background: 'var(--bg)', color: 'var(--fg)' }}></textarea>
         </div>
 
         <div style={{display: 'flex', gap: '16px'}}>
           <div className="form-group" style={{flex: 1}}>
             <label>Roadmap</label>
-            <select><option>Now</option><option>Next</option><option>Later</option></select>
+            <input type="text" placeholder="e.g. Design -> Prototyping -> Development" style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', background: 'var(--bg)', color: 'var(--fg)' }} />
           </div>
           <div className="form-group" style={{flex: 1}}>
             <label>Team</label>
-            <input type="text" placeholder="e.g. Orange" />
+            <input type="text" placeholder="e.g. Orange" style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', background: 'var(--bg)', color: 'var(--fg)' }} />
           </div>
         </div>
 
         <div className="form-group">
           <label>Idea Summary</label>
-          <textarea placeholder="Describe your idea in more detail..." required style={{ minHeight: '120px' }}></textarea>
+          <textarea placeholder="Describe your idea in more detail..." required style={{ minHeight: '120px', width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', background: 'var(--bg)', color: 'var(--fg)' }}></textarea>
         </div>
 
         <div className="form-group">
           <label>Creator</label>
-          <input type="text" placeholder="Your name" />
+          <input type="text" placeholder="Your name" style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', background: 'var(--bg)', color: 'var(--fg)' }} />
         </div>
 
         <div className="form-group">
           <label>Collaborators</label>
-          <input type="text" placeholder="e.g. John Doe, Jane Smith" />
+          <input type="text" placeholder="e.g. John Doe, Jane Smith" style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', background: 'var(--bg)', color: 'var(--fg)' }} />
         </div>
 
         <div className="form-group">
           <label>Repository Link</label>
-          <input type="url" placeholder="https://github.com/..." />
+          <input type="url" placeholder="https://github.com/..." style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', background: 'var(--bg)', color: 'var(--fg)' }} />
         </div>
 
         <div className="form-group">
-          <label>Live Idea Link (In Progress)</label>
-          <input type="url" placeholder="https://..." />
+          <label>In Progress</label>
+          <input type="url" placeholder="https://..." style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', background: 'var(--bg)', color: 'var(--fg)' }} />
         </div>
 
         <div className="modal-actions" style={{ marginTop: '32px' }}>

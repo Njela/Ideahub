@@ -113,26 +113,32 @@ export default function IdeaPage({ params }: { params: { id: string } }) {
             </div>
             <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <div style={{ display: 'flex' }}>
-                <div style={{ width: '120px', color: 'var(--muted)', fontSize: '0.95rem' }}>Goal</div>
-                <div style={{ fontSize: '0.95rem', fontWeight: 500 }}><span style={{ background: '#f5f0eb', color: '#5c3a21', border: '1px solid #e6dfd5', padding: '2px 8px', borderRadius: '4px' }}>🔒 Security</span></div>
+                <div style={{ width: '120px', color: 'var(--muted)', fontSize: '0.95rem', flexShrink: 0 }}>Goal</div>
+                <div style={{ fontSize: '0.95rem', color: 'var(--fg)' }}>{isACME ? 'Provide a unified dashboard to increase customer retention by 15%.' : 'Reduce energy costs and provide a recreational space for employees.'}</div>
               </div>
               <div style={{ display: 'flex' }}>
-                <div style={{ width: '120px', color: 'var(--muted)', fontSize: '0.95rem' }}>Updated</div>
-                <div style={{ fontSize: '0.95rem', color: '#333' }}>Oct 24, 2023 01:06 PM</div>
+                <div style={{ width: '120px', color: 'var(--muted)', fontSize: '0.95rem', flexShrink: 0 }}>Updated</div>
+                <div style={{ fontSize: '0.95rem', color: 'var(--fg)' }}>Oct 24, 2023 01:06 PM</div>
               </div>
               <div style={{ display: 'flex' }}>
-                <div style={{ width: '120px', color: 'var(--muted)', fontSize: '0.95rem' }}>Roadmap</div>
-                <div style={{ fontSize: '0.95rem', fontWeight: 500 }}><span style={{ background: '#f5f0eb', color: '#5c3a21', border: '1px solid #e6dfd5', padding: '2px 8px', borderRadius: '4px' }}>Now</span></div>
+                <div style={{ width: '120px', color: 'var(--muted)', fontSize: '0.95rem', flexShrink: 0 }}>Roadmap</div>
+                <div style={{ fontSize: '0.95rem', color: 'var(--fg)', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                  <span style={{ padding: '4px 8px', background: 'var(--bg)', border: '1px solid var(--line)', borderRadius: '4px' }}>Design</span>
+                  <span>&rarr;</span>
+                  <span style={{ padding: '4px 8px', background: 'var(--bg)', border: '1px solid var(--line)', borderRadius: '4px' }}>Prototyping</span>
+                  <span>&rarr;</span>
+                  <span style={{ padding: '4px 8px', background: 'var(--bg)', border: '1px solid var(--accent)', borderRadius: '4px', fontWeight: 500, color: 'var(--accent)' }}>Development</span>
+                </div>
               </div>
               <div style={{ display: 'flex' }}>
-                <div style={{ width: '120px', color: 'var(--muted)', fontSize: '0.95rem' }}>Team</div>
+                <div style={{ width: '120px', color: 'var(--muted)', fontSize: '0.95rem', flexShrink: 0 }}>Team</div>
                 <div style={{ fontSize: '0.95rem', fontWeight: 500 }}><span style={{ background: '#f5f0eb', color: '#5c3a21', border: '1px solid #e6dfd5', padding: '2px 8px', borderRadius: '4px' }}>🍊 Orange</span></div>
               </div>
             </div>
           </div>
 
           <div style={{ border: '1px solid var(--line)', borderRadius: '8px', overflow: 'hidden', marginBottom: '24px' }}>
-            <div style={{ padding: '12px 16px', background: '#f9f9f9', borderBottom: '1px solid var(--line)', fontWeight: 500, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div style={{ padding: '12px 16px', background: 'var(--bg)', borderBottom: '1px solid var(--line)', fontWeight: 500, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               Idea details <span>^</span>
             </div>
             <div style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -149,8 +155,8 @@ export default function IdeaPage({ params }: { params: { id: string } }) {
                 <a href="#" style={{ color: 'var(--accent)', fontSize: '0.95rem', wordBreak: 'break-all' }}>{isACME ? 'https://github.com/acme/sales' : 'N/A'}</a>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <div style={{ color: 'var(--muted)', fontSize: '0.9rem', fontWeight: 500 }}>Live Idea Link</div>
-                <a href="#" style={{ color: 'var(--accent)', fontSize: '0.95rem', wordBreak: 'break-all' }}>{isACME ? 'https://acme.dev' : 'N/A'}</a>
+                <div style={{ color: 'var(--muted)', fontSize: '0.9rem', fontWeight: 500 }}>In Progress</div>
+                <a href={isACME ? "https://acme.dev" : "#"} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent)', fontSize: '0.95rem', wordBreak: 'break-all' }}>{isACME ? 'https://acme.dev (Open live product)' : 'N/A'}</a>
               </div>
             </div>
           </div>
