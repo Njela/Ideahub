@@ -9,18 +9,22 @@
   --body-bg: #000000;
 }
 
-* { box-sizing: border-box; }
-body { margin:0; background:var(--body-bg); color:var(--fg); font:14px/1.5 system-ui, sans-serif; padding: 20px; }
-
+* { 
+  box-sizing: border-box; 
+  font-family: inherit;
+}
 html, body { 
   min-height: 100vh; 
   margin: 0;
   padding: 0;
 }
+
 body { 
   background: var(--bg); 
   color: var(--fg); 
-  font: 14px/1.5 system-ui, sans-serif; 
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 #__next, body > div:first-of-type { 
