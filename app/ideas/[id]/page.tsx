@@ -3,44 +3,78 @@
 import { useState } from "react";
 import Link from "next/link";
 
+type ModalState = {
+  isOpen: boolean;
+  title: string;
+  type: 'alert' | 'prompt' | 'confirm';
+  placeholder?: string;
+  onConfirm?: (val?: string) => void;
+};
+
 export default function IdeaPage({ params }: { params: { id: string } }) {
   const isACME = params.id === '1' || params.id === 'ACME';
   const [activeTab, setActiveTab] = useState('History');
+  const [modal, setModal] = useState<ModalState>({ isOpen: false, title: '', type: 'alert' });
+  const [modalInput, setModalInput] = useState('');
   
   const handleMove = () => {
-    const dest = prompt('Would you like to move this idea to a different Status or Category? (Type "status" or "category")');
-    if (dest?.toLowerCase() === 'status') {
-      alert('Opened Status configuration panel.');
-    } else if (dest?.toLowerCase() === 'category') {
-      alert('Opened Category configuration panel.');
-    }
+    setModal({
+      isOpen: true,
+      title: 'Move this idea to a different Status or Category? (Type "status" or "category")',
+      type: 'prompt',
+      placeholder: 'status / category',
+      onConfirm: (val) => {
+        if (val?.toLowerCase() === 'status') {
+          setModal({ isOpen: true, title: 'Opened Status configuration panel.', type: 'alert' });
+        } else if (val?.toLowerCase() === 'category') {
+          setModal({ isOpen: true, title: 'Opened Category configuration panel.', type: 'alert' });
+        } else {
+          setModal({ isOpen: false, title: '', type: 'alert' });
+        }
+      }
+    });
+    setModalInput('');
   };
 
   const handleClone = () => {
     const repoElement = document.getElementById('repo-link-section');
     if (repoElement) {
       repoElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      repoElement.style.background = '#f5f0eb';
+      repoElement.style.background = 'var(--line)';
       setTimeout(() => repoElement.style.background = 'transparent', 1500);
     }
   };
 
   const handleMerge = () => {
-    const mergeId = prompt('Enter the ID or Title of the idea you want to merge this with:');
-    if (mergeId) {
-      alert(`Idea queued to merge with "${mergeId}".`);
-    }
+    setModal({
+      isOpen: true,
+      title: 'Enter the ID or Title of the idea you want to merge this with:',
+      type: 'prompt',
+      placeholder: 'e.g. AWE-224',
+      onConfirm: (val) => {
+        if (val) {
+          setModal({ isOpen: true, title: `Idea queued to merge with "${val}".`, type: 'alert' });
+        } else {
+          setModal({ isOpen: false, title: '', type: 'alert' });
+        }
+      }
+    });
+    setModalInput('');
   };
 
   const handleArchive = () => {
-    const confirmArchive = confirm('Are you sure you want to drop this idea into the Archive box?');
-    if (confirmArchive) {
-      alert('Idea successfully dropped into the Archive box! 🗄️');
-    }
+    setModal({
+      isOpen: true,
+      title: 'Are you sure you want to drop this idea into the Archive box?',
+      type: 'confirm',
+      onConfirm: () => {
+        setModal({ isOpen: true, title: 'Idea successfully dropped into the Archive box! 🗄️', type: 'alert' });
+      }
+    });
   };
 
   const handleAction = (action: string) => {
-    alert(`${action} functionality would open here.`);
+    setModal({ isOpen: true, title: `${action} functionality would open here.`, type: 'alert' });
   };
 
   const getTabStyle = (tabName: string) => {
@@ -194,6 +228,43 @@ export default function IdeaPage({ params }: { params: { id: string } }) {
           </div>
         </div>
       </div>
+
+      {modal.isOpen && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
+          <div style={{ background: 'var(--bg)', padding: '24px', borderRadius: '8px', minWidth: '400px', border: '1px solid var(--line)', boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}>
+            <h3 style={{ margin: '0 0 16px 0', fontSize: '1.1rem', fontWeight: 500 }}>{modal.title}</h3>
+            {modal.type === 'prompt' && (
+              <input 
+                type="text" 
+                value={modalInput} 
+                onChange={e => setModalInput(e.target.value)}
+                placeholder={modal.placeholder}
+                style={{ width: '100%', padding: '10px', border: '1px solid var(--line)', borderRadius: '4px', marginBottom: '16px', background: 'var(--bg)', color: 'var(--fg)' }}
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && modal.onConfirm) modal.onConfirm(modalInput);
+                }}
+              />
+            )}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: modal.type === 'prompt' ? 0 : '24px' }}>
+              {(modal.type === 'confirm' || modal.type === 'prompt') && (
+                <button 
+                  onClick={() => setModal({ ...modal, isOpen: false })} 
+                  style={{ padding: '8px 16px', background: 'transparent', border: '1px solid var(--line)', borderRadius: '4px', cursor: 'pointer', color: 'var(--fg)' }}
+                >
+                  Cancel
+                </button>
+              )}
+              <button 
+                onClick={() => modal.onConfirm ? modal.onConfirm(modalInput) : setModal({ ...modal, isOpen: false })} 
+                style={{ padding: '8px 16px', background: 'var(--accent)', color: 'var(--bg)', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 500 }}
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
