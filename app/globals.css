@@ -295,7 +295,7 @@ main {
   border: none;
   padding: 10px 24px;
   border-radius: 4px;
-  width: 100%;
+  width: auto;
   font-weight: 500;
 }
 
