@@ -76,10 +76,8 @@ export default function Home() {
             />
             <span className="search-icon">🔍</span>
           </div>
-          <Link href="/ideas/new">
-            <button className="create-btn" style={{ padding: '10px 24px', background: 'var(--accent)', color: 'var(--bg)', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 500 }}>
-              Create an Idea
-            </button>
+          <Link href="/ideas/new" className="create-btn" style={{ padding: '10px 24px', background: 'var(--accent)', color: 'var(--bg)', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 500, textDecoration: 'none', display: 'inline-block' }}>
+            Create an Idea
           </Link>
         </div>
 
@@ -158,8 +156,6 @@ export default function Home() {
             ))}
           </ul>
         )}
-      </div>
-
       </div>
     </div>
   );
