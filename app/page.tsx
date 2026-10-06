@@ -28,11 +28,24 @@ const IDEAS_DATA = [
 
 export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState("All Ideas");
 
-  const filteredIdeas = IDEAS_DATA.filter((idea) => 
-    idea.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    idea.author.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Mock current user for demonstration purposes
+  const CURRENT_USER = "Helga Windle";
+
+  const filteredIdeas = IDEAS_DATA.filter((idea) => {
+    // 1. Filter by Tab
+    if (activeTab === "My Ideas" && idea.author !== CURRENT_USER) {
+      return false;
+    }
+    
+    // 2. Filter by Search Query
+    const matchesSearch = 
+      idea.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      idea.author.toLowerCase().includes(searchQuery.toLowerCase());
+      
+    return matchesSearch;
+  });
 
   return (
     <div className="ideas-layout">
@@ -50,8 +63,18 @@ export default function Home() {
         </div>
 
         <div className="tabs">
-          <div className="tab active">All Ideas</div>
-          <div className="tab">My Ideas</div>
+          <div 
+            className={`tab ${activeTab === "All Ideas" ? "active" : ""}`}
+            onClick={() => setActiveTab("All Ideas")}
+          >
+            All Ideas
+          </div>
+          <div 
+            className={`tab ${activeTab === "My Ideas" ? "active" : ""}`}
+            onClick={() => setActiveTab("My Ideas")}
+          >
+            My Ideas
+          </div>
         </div>
 
         <div className="filters-bar">
