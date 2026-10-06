@@ -30,6 +30,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </Link>
             </div>
             <div className="header-icons" style={{display: 'flex', gap: '16px', marginLeft: 'auto'}}>
+              <Link href="/archive" style={{textDecoration: 'none'}}><span className="icon" title="Archive Box">🗄️</span></Link>
               <Link href="/profile" style={{textDecoration: 'none'}}><span className="icon" title="Profile">👤</span></Link>
               <Link href="/settings" style={{textDecoration: 'none'}}><span className="icon" title="Settings">⚙️</span></Link>
             </div>

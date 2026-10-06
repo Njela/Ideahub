@@ -66,7 +66,7 @@ export default function Home() {
   return (
     <div className="ideas-layout">
       <div className="main-content">
-        <div className="page-header" style={{justifyContent: 'flex-end'}}>
+        <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div className="search-box">
             <input 
               type="text" 
@@ -76,6 +76,11 @@ export default function Home() {
             />
             <span className="search-icon">🔍</span>
           </div>
+          <Link href="/ideas/new">
+            <button className="create-btn" style={{ padding: '10px 24px', background: 'var(--accent)', color: 'var(--bg)', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 500 }}>
+              Create an Idea
+            </button>
+          </Link>
         </div>
 
         <div className="tabs">
@@ -155,11 +160,6 @@ export default function Home() {
         )}
       </div>
 
-      <div className="sidebar">
-        <div className="share-idea">
-          <p>Have an Idea? Share it!</p>
-          <Link href="/ideas/new"><button className="create-btn">Create an Idea</button></Link>
-        </div>
       </div>
     </div>
   );

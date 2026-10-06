@@ -7,6 +7,38 @@ export default function IdeaPage({ params }: { params: { id: string } }) {
   const isACME = params.id === '1' || params.id === 'ACME';
   const [activeTab, setActiveTab] = useState('History');
   
+  const handleMove = () => {
+    const dest = prompt('Would you like to move this idea to a different Status or Category? (Type "status" or "category")');
+    if (dest?.toLowerCase() === 'status') {
+      alert('Opened Status configuration panel.');
+    } else if (dest?.toLowerCase() === 'category') {
+      alert('Opened Category configuration panel.');
+    }
+  };
+
+  const handleClone = () => {
+    const repoElement = document.getElementById('repo-link-section');
+    if (repoElement) {
+      repoElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      repoElement.style.background = '#f5f0eb';
+      setTimeout(() => repoElement.style.background = 'transparent', 1500);
+    }
+  };
+
+  const handleMerge = () => {
+    const mergeId = prompt('Enter the ID or Title of the idea you want to merge this with:');
+    if (mergeId) {
+      alert(`Idea queued to merge with "${mergeId}".`);
+    }
+  };
+
+  const handleArchive = () => {
+    const confirmArchive = confirm('Are you sure you want to drop this idea into the Archive box?');
+    if (confirmArchive) {
+      alert('Idea successfully dropped into the Archive box! 🗄️');
+    }
+  };
+
   const handleAction = (action: string) => {
     alert(`${action} functionality would open here.`);
   };
@@ -29,10 +61,10 @@ export default function IdeaPage({ params }: { params: { id: string } }) {
           </div>
           
           <div style={{ display: 'flex', gap: '16px', fontSize: '0.9rem' }}>
-            <button className="action-link" onClick={() => handleAction('Move')}>Move</button>
-            <button className="action-link" onClick={() => handleAction('Clone')}>Clone</button>
-            <button className="action-link" onClick={() => handleAction('Merge')}>Merge</button>
-            <button className="action-link" onClick={() => handleAction('Archive')}>Archive</button>
+            <button className="action-link" onClick={handleMove}>Move</button>
+            <button className="action-link" onClick={handleClone}>Clone</button>
+            <button className="action-link" onClick={handleMerge}>Merge</button>
+            <button className="action-link" onClick={handleArchive}>Archive</button>
           </div>
         </div>
       </div>
@@ -150,7 +182,7 @@ export default function IdeaPage({ params }: { params: { id: string } }) {
                 <div style={{ color: 'var(--muted)', fontSize: '0.9rem', fontWeight: 500 }}>Collaborators</div>
                 <div style={{ fontSize: '0.95rem' }}>{isACME ? 'Adela Cervantsz, Bess Marso' : 'Jane Doe, John Smith'}</div>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <div id="repo-link-section" style={{ display: 'flex', flexDirection: 'column', gap: '6px', transition: 'background-color 0.3s ease', padding: '4px', borderRadius: '4px' }}>
                 <div style={{ color: 'var(--muted)', fontSize: '0.9rem', fontWeight: 500 }}>Repository Link</div>
                 <a href="#" style={{ color: 'var(--accent)', fontSize: '0.95rem', wordBreak: 'break-all' }}>{isACME ? 'https://github.com/acme/sales' : 'N/A'}</a>
               </div>
