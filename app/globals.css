@@ -155,37 +155,42 @@ main {
 .filters-bar {
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-end;
   background: var(--bg);
   padding: 16px;
   border: 1px solid var(--line);
   border-radius: 4px;
-  gap: 24px;
-  margin-bottom: 16px;
+  gap: 16px;
+  margin-bottom: 24px;
 }
 .filter-group {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
+  flex: 1;
+  min-width: 140px;
 }
 .filter-group label {
   font-size: 0.8rem;
   color: var(--muted);
   margin: 0;
+  font-weight: 500;
 }
 .filter-group select {
-  padding: 6px 32px 6px 12px;
+  padding: 8px 12px;
   border: 1px solid var(--line);
   border-radius: 4px;
   background: var(--bg);
   color: var(--fg);
-  min-width: 140px;
+  width: 100%;
 }
 .sort-by {
-  margin-left: auto;
+  flex: 1;
+  min-width: 140px;
 }
 .sort-by select {
-  border-color: var(--accent);
-  border-width: 2px;
+  border-color: var(--line);
+  border-width: 1px;
 }
 
 /* Results Info */
