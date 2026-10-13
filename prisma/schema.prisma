@@ -3,35 +3,50 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
 model User {
   id          String     @id @default(cuid())
   name        String
-  githubLogin String     @unique
+  email       String?
+  githubLogin String?    @unique
   image       String?
   ideas       Idea[]
   revisions   Revision[]
 }
 
 model Idea {
-  id           String          @id @default(cuid())
-  title        String
-  description  String          @default("")
-  status       String          @default("PROPOSED") // PROPOSED | IN_REVIEW | APPROVED | IN_PROGRESS | DONE | SHELVED
-  repoFullName String?         @unique              // e.g. "my-org/my-app"
-  version      Int             @default(1)          // optimistic lock
-  createdById  String
-  createdBy    User            @relation(fields: [createdById], references: [id])
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
-  revisions    Revision[]
-  events       ActivityEvent[]
+  id            String          @id @default(cuid())
+  code          String?         @unique
+  title         String
+  subtitle      String?
+  goal          String?
+  roadmap       String?
+  team          String?
+  description   String          @default("")
+  category      String          @default("Business")
+  status        String          @default("Proposed") // Proposed | In Review | Approved | In Progress | Done | Shelved
+  icon          String          @default("💡")
+  creator       String          @default("Helga Windle")
+  collaborators String?
+  repoFullName  String?         @unique
+  repoUrl       String?
+  inProgressUrl String?
+  votes         Int             @default(0)
+  tags          String          @default("Increase Innovation")
+  isArchived    Boolean         @default(false)
+  archivedAt    DateTime?
+  version       Int             @default(1)
+  createdById   String?
+  createdBy     User?           @relation(fields: [createdById], references: [id])
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  revisions     Revision[]
+  events        ActivityEvent[]
 }
 
-// Append-only: one row per save, with only the fields that changed.
 model Revision {
   id        String   @id @default(cuid())
   ideaId    String
@@ -39,16 +54,15 @@ model Revision {
   authorId  String
   author    User     @relation(fields: [authorId], references: [id])
   version   Int
-  changes   Json     // { field: { from, to } }
+  changes   String   @default("{}") // JSON string of { field: { from, to } }
   note      String?
   createdAt DateTime @default(now())
   @@index([ideaId, createdAt])
 }
 
-// Mirrored from GitHub webhooks.
 model ActivityEvent {
   id         String   @id @default(cuid())
-  deliveryId String   @unique // X-GitHub-Delivery, makes webhook retries idempotent
+  deliveryId String   @unique // X-GitHub-Delivery
   ideaId     String
   idea       Idea     @relation(fields: [ideaId], references: [id], onDelete: Cascade)
   type       String   // push | pr_opened | pr_merged | pr_closed | issue_opened | issue_closed | release
