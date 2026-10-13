@@ -34,6 +34,8 @@ model Idea {
   repoFullName  String?         @unique
   repoUrl       String?
   inProgressUrl String?
+  attachments   String          @default("[]") // JSON string of [{ name, url, size, date }]
+  linkedIssues  String          @default("[]") // JSON string of [{ id, title, url }]
   votes         Int             @default(0)
   tags          String          @default("Increase Innovation")
   isArchived    Boolean         @default(false)

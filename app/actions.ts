@@ -110,10 +110,12 @@ export async function getIdeaById(id: string) {
     icon: idea.icon || getCategoryIcon(idea.category),
     votes: idea.votes,
     tags: idea.tags ? idea.tags.split(",").map((t) => t.trim()) : ["Increase Innovation"],
-    collaborators: idea.collaborators || "N/A",
+    collaborators: idea.collaborators || "",
     repoUrl: idea.repoUrl || "",
     inProgressUrl: idea.inProgressUrl || "",
     isArchived: idea.isArchived,
+    attachments: idea.attachments ? (JSON.parse(idea.attachments) as { name: string; url: string; size?: string; date?: string }[]) : [],
+    linkedIssues: idea.linkedIssues ? (JSON.parse(idea.linkedIssues) as { id: string; title: string; url?: string }[]) : [],
   };
 }
 
@@ -193,6 +195,115 @@ export async function unarchiveIdea(id: string) {
   revalidatePath("/archive");
   revalidatePath(`/ideas/${id}`);
   return { success: true };
+}
+
+export async function updateIdea(
+  id: string,
+  updates: {
+    title?: string;
+    subtitle?: string;
+    goal?: string;
+    roadmap?: string;
+    description?: string;
+    collaborators?: string;
+    repoUrl?: string;
+    inProgressUrl?: string;
+    category?: string;
+    status?: string;
+  }
+) {
+  const data: Record<string, any> = { ...updates };
+  if (updates.category) {
+    data.icon = getCategoryIcon(updates.category);
+  }
+
+  await db.idea.update({
+    where: { id },
+    data,
+  });
+
+  revalidatePath("/");
+  revalidatePath(`/ideas/${id}`);
+  return { success: true };
+}
+
+export async function addAttachment(
+  id: string,
+  attachment: { name: string; url: string; size?: string; date?: string }
+) {
+  const idea = await db.idea.findUnique({ where: { id } });
+  if (!idea) return { success: false, message: "Idea not found" };
+
+  const current: any[] = idea.attachments ? JSON.parse(idea.attachments) : [];
+  current.push({
+    name: attachment.name,
+    url: attachment.url,
+    size: attachment.size || "Unknown",
+    date: attachment.date || new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+  });
+
+  await db.idea.update({
+    where: { id },
+    data: { attachments: JSON.stringify(current) },
+  });
+
+  revalidatePath(`/ideas/${id}`);
+  return { success: true, attachments: current };
+}
+
+export async function deleteAttachment(id: string, index: number) {
+  const idea = await db.idea.findUnique({ where: { id } });
+  if (!idea) return { success: false };
+
+  const current: any[] = idea.attachments ? JSON.parse(idea.attachments) : [];
+  current.splice(index, 1);
+
+  await db.idea.update({
+    where: { id },
+    data: { attachments: JSON.stringify(current) },
+  });
+
+  revalidatePath(`/ideas/${id}`);
+  return { success: true, attachments: current };
+}
+
+export async function addLinkedIssue(
+  id: string,
+  issue: { id: string; title: string; url?: string }
+) {
+  const idea = await db.idea.findUnique({ where: { id } });
+  if (!idea) return { success: false, message: "Idea not found" };
+
+  const current: any[] = idea.linkedIssues ? JSON.parse(idea.linkedIssues) : [];
+  current.push({
+    id: issue.id,
+    title: issue.title || issue.id,
+    url: issue.url || (issue.id.startsWith("http") ? issue.id : `https://github.com/issues/${issue.id.replace("#", "")}`),
+  });
+
+  await db.idea.update({
+    where: { id },
+    data: { linkedIssues: JSON.stringify(current) },
+  });
+
+  revalidatePath(`/ideas/${id}`);
+  return { success: true, linkedIssues: current };
+}
+
+export async function deleteLinkedIssue(id: string, index: number) {
+  const idea = await db.idea.findUnique({ where: { id } });
+  if (!idea) return { success: false };
+
+  const current: any[] = idea.linkedIssues ? JSON.parse(idea.linkedIssues) : [];
+  current.splice(index, 1);
+
+  await db.idea.update({
+    where: { id },
+    data: { linkedIssues: JSON.stringify(current) },
+  });
+
+  revalidatePath(`/ideas/${id}`);
+  return { success: true, linkedIssues: current };
 }
 
 export async function moveIdea(id: string, updates: { status?: string; category?: string }) {

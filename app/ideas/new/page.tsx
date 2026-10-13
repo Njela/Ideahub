@@ -75,27 +75,15 @@ export default function NewIdeaPage() {
           ></textarea>
         </div>
 
-        <div style={{ display: "flex", gap: "16px" }}>
-          <div className="form-group" style={{ flex: 1 }}>
-            <label>Roadmap</label>
-            <input
-              name="roadmap"
-              type="text"
-              placeholder="e.g. Design -> Prototyping -> Development"
-              defaultValue="Design -> Prototyping -> Development"
-              style={{ width: "100%", padding: "10px", border: "1px solid var(--line)", borderRadius: "4px", background: "var(--bg)", color: "var(--fg)" }}
-            />
-          </div>
-          <div className="form-group" style={{ flex: 1 }}>
-            <label>Team</label>
-            <input
-              name="team"
-              type="text"
-              placeholder="e.g. Orange"
-              defaultValue="Orange"
-              style={{ width: "100%", padding: "10px", border: "1px solid var(--line)", borderRadius: "4px", background: "var(--bg)", color: "var(--fg)" }}
-            />
-          </div>
+        <div className="form-group">
+          <label>Roadmap</label>
+          <input
+            name="roadmap"
+            type="text"
+            placeholder="e.g. Design -> Prototyping -> Development"
+            defaultValue="Design -> Prototyping -> Development"
+            style={{ width: "100%", padding: "10px", border: "1px solid var(--line)", borderRadius: "4px", background: "var(--bg)", color: "var(--fg)" }}
+          />
         </div>
 
         <div className="form-group">
