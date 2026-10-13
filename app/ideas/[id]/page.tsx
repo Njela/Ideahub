@@ -75,14 +75,27 @@ export default function IdeaPage({ params }: { params: { id: string } }) {
         if (val?.toLowerCase() === "status") {
           setModal({
             isOpen: true,
-            title: "Enter new status (Proposed, In Review, Approved, In Progress, Done, Shelved):",
+            title: "Enter new status (Proposed, In Review, Approved, In Progress, Done, Archived):",
             type: "prompt",
             placeholder: "e.g. In Progress",
             onConfirm: async (newStatus) => {
               if (newStatus) {
-                await moveIdea(idea.id, { status: newStatus });
-                await refreshIdea();
-                setModal({ isOpen: true, title: `Idea status updated to "${newStatus}"!`, type: "alert" });
+                if (newStatus.trim().toLowerCase() === "archived") {
+                  await archiveIdea(idea.id);
+                  setModal({
+                    isOpen: true,
+                    title: `Idea status set to Archived! Dropped into the Archive box.`,
+                    type: "alert",
+                    onConfirm: () => {
+                      setModal({ isOpen: false, title: "", type: "alert" });
+                      router.push("/archive");
+                    },
+                  });
+                } else {
+                  await moveIdea(idea.id, { status: newStatus });
+                  await refreshIdea();
+                  setModal({ isOpen: true, title: `Idea status updated to "${newStatus}"!`, type: "alert" });
+                }
               } else {
                 setModal({ isOpen: false, title: "", type: "alert" });
               }

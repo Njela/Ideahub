@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { getIdeas } from "@/app/actions";
 
@@ -28,6 +29,7 @@ type IdeaItem = {
 };
 
 export default function Home() {
+  const router = useRouter();
   const [ideas, setIdeas] = useState<IdeaItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -136,14 +138,23 @@ export default function Home() {
         <div className="filters-bar">
           <div className="filter-group">
             <label>Status</label>
-            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+            <select
+              value={statusFilter}
+              onChange={(e) => {
+                if (e.target.value === "Archived") {
+                  router.push("/archive");
+                } else {
+                  setStatusFilter(e.target.value);
+                }
+              }}
+            >
               <option>Any status</option>
               <option>Proposed</option>
               <option>In Review</option>
               <option>Approved</option>
               <option>In Progress</option>
               <option>Done</option>
-              <option>Shelved</option>
+              <option>Archived</option>
             </select>
           </div>
           <div className="filter-group">

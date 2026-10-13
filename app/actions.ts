@@ -278,8 +278,9 @@ function getStatusIcon(status: string): string {
       return "⚡";
     case "done":
       return "🎉";
+    case "archived":
     case "shelved":
-      return "📁";
+      return "🗄️";
     default:
       return "💡";
   }
