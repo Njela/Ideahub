@@ -57,17 +57,6 @@ export default function AppSidebar({
             {!isCollapsed && <span className="sidebar-brand-title">IdeaHub</span>}
           </Link>
 
-          {/* Toggle Button (Collapse / Expand) */}
-          <button
-            type="button"
-            className="sidebar-toggle-btn"
-            onClick={onToggleCollapse}
-            title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            {isCollapsed ? "▶" : "◀"}
-          </button>
-
           {/* Mobile Close Button */}
           {isOpen && onClose && (
             <button

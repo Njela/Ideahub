@@ -155,15 +155,15 @@ export default function AppTopHeader({
 
   return (
     <header className="app-top-header">
-      {/* Sidebar Toggle Button */}
+      {/* Single Sidebar Toggle Button */}
       <button
         type="button"
         className="header-sidebar-toggle mobile-sidebar-toggle"
         onClick={onToggleSidebar}
-        aria-label="Toggle Navigation Menu"
-        title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+        aria-label={isSidebarCollapsed ? "Open sidebar" : "Collapse sidebar"}
+        title={isSidebarCollapsed ? "Open sidebar (>)" : "Collapse sidebar (<)"}
       >
-        ☰
+        {isSidebarCollapsed ? ">" : "<"}
       </button>
 
       {/* Global Search Box Wrapper */}
