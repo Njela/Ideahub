@@ -377,6 +377,37 @@ export async function mergeIdeas(sourceId: string, targetIdentifier: string) {
   return { success: true, targetId: target.id, targetTitle: target.title };
 }
 
+export async function searchIdeas(query: string) {
+  if (!query || query.trim().length === 0) return [];
+  const q = query.trim().toLowerCase();
+
+  const ideas = await db.idea.findMany({
+    where: {
+      isArchived: false,
+      OR: [
+        { title: { contains: q } },
+        { code: { contains: q } },
+        { category: { contains: q } },
+        { creator: { contains: q } },
+        { description: { contains: q } },
+      ],
+    },
+    take: 8,
+    orderBy: { createdAt: "desc" },
+  });
+
+  return ideas.map((idea) => ({
+    id: idea.id,
+    code: idea.code || `AWE-${idea.id.slice(0, 4)}`,
+    title: idea.title,
+    author: idea.creator,
+    category: idea.category,
+    statusText: idea.status,
+    icon: idea.icon || getCategoryIcon(idea.category),
+    statusIcon: getStatusIcon(idea.status),
+  }));
+}
+
 function getStatusIcon(status: string): string {
   switch (status?.toLowerCase()) {
     case "proposed":
