@@ -12,7 +12,6 @@ type IdeaItem = {
   subtitle: string;
   goal: string;
   roadmap: string;
-  team: string;
   description: string;
   author: string;
   created: string;
@@ -27,6 +26,49 @@ type IdeaItem = {
   repoUrl: string;
   inProgressUrl: string;
 };
+
+const RECENT_ACTIVITIES = [
+  {
+    id: 1,
+    type: "create",
+    badge: "+",
+    badgeBg: "#6366f1",
+    actor: "Angela",
+    action: "created a new idea",
+    target: "Operations",
+    time: "1h ago",
+  },
+  {
+    id: 2,
+    type: "status",
+    badge: "✓",
+    badgeBg: "#10b981",
+    actor: "Bess",
+    action: "updated the status",
+    target: "Legacy Database Migration",
+    time: "3h ago",
+  },
+  {
+    id: 3,
+    type: "comment",
+    badge: "💬",
+    badgeBg: "#3b82f6",
+    actor: "Mark",
+    action: "commented on an idea",
+    target: "API Integration",
+    time: "5h ago",
+  },
+  {
+    id: 4,
+    type: "archive",
+    badge: "🗄️",
+    badgeBg: "#8b5a2b",
+    actor: "You",
+    action: "archived an idea",
+    target: "Old Analytics Pipeline",
+    time: "1d ago",
+  },
+];
 
 export default function Home() {
   const router = useRouter();
@@ -58,17 +100,26 @@ export default function Home() {
   const filteredIdeas = ideas
     .filter((idea) => {
       // 1. Filter by Tab
-      if (activeTab === "My Ideas" && !idea.author.toLowerCase().includes(CURRENT_USER.toLowerCase())) {
+      if (
+        activeTab === "My Ideas" &&
+        !idea.author.toLowerCase().includes(CURRENT_USER.toLowerCase())
+      ) {
         return false;
       }
 
       // 2. Filter by Status
-      if (statusFilter !== "Any status" && idea.statusText.toLowerCase() !== statusFilter.toLowerCase()) {
+      if (
+        statusFilter !== "Any status" &&
+        idea.statusText.toLowerCase() !== statusFilter.toLowerCase()
+      ) {
         return false;
       }
 
       // 3. Filter by Category
-      if (categoryFilter !== "All categories" && idea.category.toLowerCase() !== categoryFilter.toLowerCase()) {
+      if (
+        categoryFilter !== "All categories" &&
+        idea.category.toLowerCase() !== categoryFilter.toLowerCase()
+      ) {
         return false;
       }
 
@@ -77,7 +128,8 @@ export default function Home() {
       const matchesSearch =
         idea.title.toLowerCase().includes(query) ||
         idea.author.toLowerCase().includes(query) ||
-        idea.code.toLowerCase().includes(query);
+        idea.code.toLowerCase().includes(query) ||
+        idea.category.toLowerCase().includes(query);
 
       return matchesSearch;
     })
@@ -89,55 +141,53 @@ export default function Home() {
     });
 
   return (
-    <div className="ideas-layout">
-      <div className="main-content">
-        <div className="page-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div className="search-box">
-            <input
-              type="text"
-              placeholder="Search ideas..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <span className="search-icon">🔍</span>
-          </div>
-          <Link
-            href="/ideas/new"
-            className="create-btn"
-            style={{
-              padding: "10px 24px",
-              background: "var(--accent)",
-              color: "var(--bg)",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontWeight: 500,
-              textDecoration: "none",
-              display: "inline-block",
-            }}
-          >
-            Create an Idea
-          </Link>
+    <div>
+      {/* 1. Hero Banner */}
+      <section className="hero-banner">
+        <div className="hero-content">
+          <h2>
+            Turn ideas into <span className="highlight">impactful solutions</span>
+          </h2>
+          <p className="hero-subtitle">Collaborate • Build • Make it real</p>
         </div>
 
-        <div className="tabs">
+        <div className="hero-quote-box">
+          <span className="hero-quote-icon">💡</span>
+          <span className="hero-quote-text">
+            &ldquo;Great ideas start with a thought.&rdquo;
+          </span>
+        </div>
+      </section>
+
+      {/* 2. Tabs & Action Bar */}
+      <div className="main-action-row">
+        <div className="hero-tabs">
           <div
-            className={`tab ${activeTab === "All Ideas" ? "active" : ""}`}
+            className={`hero-tab ${activeTab === "All Ideas" ? "active" : ""}`}
             onClick={() => setActiveTab("All Ideas")}
           >
             All Ideas
           </div>
           <div
-            className={`tab ${activeTab === "My Ideas" ? "active" : ""}`}
+            className={`hero-tab ${activeTab === "My Ideas" ? "active" : ""}`}
             onClick={() => setActiveTab("My Ideas")}
           >
             My Ideas
           </div>
         </div>
 
-        <div className="filters-bar">
-          <div className="filter-group">
-            <label>Status</label>
+        <Link href="/ideas/new" className="main-create-btn">
+          <span>+</span> Create an Idea
+        </Link>
+      </div>
+
+      {/* 3. Filter Pills Bar */}
+      <div className="filter-pills-row">
+        {/* Status Pill */}
+        <div className="filter-pill-card">
+          <label>Status</label>
+          <div className="filter-pill-select-wrapper">
+            <span>🏷️</span>
             <select
               value={statusFilter}
               onChange={(e) => {
@@ -157,9 +207,17 @@ export default function Home() {
               <option>Archived</option>
             </select>
           </div>
-          <div className="filter-group">
-            <label>Category</label>
-            <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
+        </div>
+
+        {/* Category Pill */}
+        <div className="filter-pill-card">
+          <label>Category</label>
+          <div className="filter-pill-select-wrapper">
+            <span>📁</span>
+            <select
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+            >
               <option>All categories</option>
               <option>Business</option>
               <option>Technology</option>
@@ -168,70 +226,122 @@ export default function Home() {
               <option>Lifestyle</option>
             </select>
           </div>
-          <div className="filter-group sort-by">
-            <label>Sort by</label>
-            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+        </div>
+
+        {/* Sort Pill */}
+        <div className="filter-pill-card">
+          <label>Sort by</label>
+          <div className="filter-pill-select-wrapper">
+            <span>📶</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+            >
               <option>Most recent</option>
               <option>Oldest</option>
             </select>
           </div>
         </div>
+      </div>
 
-        {loading ? (
-          <div style={{ padding: "40px", textAlign: "center", color: "var(--muted)" }}>
-            Loading ideas from database...
-          </div>
-        ) : filteredIdeas.length === 0 ? (
-          <div style={{ padding: "40px", textAlign: "center", color: "var(--muted)" }}>
-            No ideas found matching &quot;{searchQuery}&quot;
-          </div>
-        ) : (
-          <ul className="idea-list">
-            {filteredIdeas.map((idea) => (
-              <li className="idea-item" key={idea.id}>
-                <div
-                  style={{
-                    width: "60px",
-                    height: "60px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "2.5rem",
-                    background: "var(--bg)",
-                    border: "1px solid var(--line)",
-                    borderRadius: "8px",
-                    flexShrink: 0,
-                  }}
-                >
-                  {idea.icon}
-                </div>
-                <div className="idea-details">
-                  <h3>
-                    <Link href={`/ideas/${idea.id}`} style={{ textDecoration: "none", color: "inherit" }}>
-                      {idea.title}
-                    </Link>
-                  </h3>
-                  <div className="idea-meta">
-                    by {idea.author} • Created {idea.created} •{" "}
-                    <span className="status">
-                      <span className="status-icon">{idea.statusIcon}</span> {idea.statusText}
-                    </span>
-                  </div>
-                  <div className="idea-tags">
-                    <span className="tag" style={{ background: "var(--accent)", color: "var(--bg)" }}>
-                      {idea.category}
-                    </span>
-                    {idea.tags.map((tag) => (
-                      <span className="tag" key={tag}>
-                        {tag}
+      {/* 4. Two-Column Main Content Feed */}
+      <div className="two-column-feed">
+        {/* Left Column: Idea Cards */}
+        <div className="ideas-feed-column">
+          {loading ? (
+            <div
+              style={{
+                padding: "48px",
+                textAlign: "center",
+                color: "var(--muted)",
+                background: "var(--bg)",
+                border: "1px solid var(--line)",
+                borderRadius: "10px",
+              }}
+            >
+              Loading ideas from database...
+            </div>
+          ) : filteredIdeas.length === 0 ? (
+            <div
+              style={{
+                padding: "48px",
+                textAlign: "center",
+                color: "var(--muted)",
+                background: "var(--bg)",
+                border: "1px dashed var(--line)",
+                borderRadius: "10px",
+              }}
+            >
+              No ideas found matching your filter criteria.
+            </div>
+          ) : (
+            filteredIdeas.map((idea) => (
+              <Link
+                key={idea.id}
+                href={`/ideas/${idea.id}`}
+                className="idea-feed-card"
+              >
+                <div className="card-left">
+                  <div className="card-icon-box">{idea.icon}</div>
+                  <div className="card-content">
+                    <h3 className="card-title">{idea.title}</h3>
+                    <div className="card-meta">
+                      <span>by {idea.author}</span>
+                      <span>•</span>
+                      <span>Created {idea.created}</span>
+                      <span>•</span>
+                      <span>
+                        {idea.statusIcon} {idea.statusText}
                       </span>
-                    ))}
+                    </div>
+                    <div className="card-tags">
+                      <span className="category-badge">{idea.category}</span>
+                      {idea.tags.map((tag, idx) => (
+                        <span key={idx} className="tag-pill">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </li>
+
+                <div className="card-right-action" title="Open idea details">
+                  &rarr;
+                </div>
+              </Link>
+            ))
+          )}
+        </div>
+
+        {/* Right Column: Recent Activity Feed */}
+        <div className="recent-activity-card">
+          <div className="activity-header">
+            <span>⚡</span>
+            <span>Recent Activity</span>
+          </div>
+
+          <div className="activity-timeline">
+            {RECENT_ACTIVITIES.map((act) => (
+              <div key={act.id} className="activity-item">
+                <div
+                  className="activity-icon-badge"
+                  style={{ background: act.badgeBg }}
+                >
+                  {act.badge}
+                </div>
+                <div className="activity-details">
+                  <div className="activity-text">
+                    <strong>{act.actor}</strong> {act.action}{" "}
+                    <span style={{ color: "var(--accent)", fontWeight: 500 }}>
+                      {act.target}
+                    </span>
+                  </div>
+                  <span className="activity-time">{act.time}</span>
+                </div>
+              </div>
             ))}
-          </ul>
-        )}
+          </div>
+        </div>
       </div>
     </div>
   );

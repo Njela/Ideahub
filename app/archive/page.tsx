@@ -46,9 +46,8 @@ export default function ArchivePage() {
   };
 
   return (
-    <div className="ideas-layout">
-      <div className="main-content" style={{ maxWidth: "800px", margin: "0 auto", width: "100%" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "32px" }}>
+    <div style={{ maxWidth: "900px", margin: "0 auto", width: "100%" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "32px" }}>
           <h1 style={{ fontSize: "2rem", margin: 0 }}>Archive Box 🗄️</h1>
           <Link href="/" style={{ color: "var(--accent)", textDecoration: "none", fontWeight: 500 }}>
             &larr; Back to all ideas
@@ -120,7 +119,6 @@ export default function ArchivePage() {
             ))}
           </ul>
         )}
-      </div>
     </div>
   );
 }
