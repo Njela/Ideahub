@@ -175,10 +175,6 @@ export default function Home() {
             My Ideas
           </div>
         </div>
-
-        <Link href="/ideas/new" className="main-create-btn">
-          <span>+</span> Create an Idea
-        </Link>
       </div>
 
       {/* 3. Filter Pills Bar */}

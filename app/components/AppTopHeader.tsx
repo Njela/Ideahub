@@ -8,12 +8,14 @@ interface AppTopHeaderProps {
   onToggleSidebar?: () => void;
   searchQuery?: string;
   onSearchChange?: (val: string) => void;
+  isSidebarCollapsed?: boolean;
 }
 
 export default function AppTopHeader({
   onToggleSidebar,
   searchQuery = "",
   onSearchChange,
+  isSidebarCollapsed = false,
 }: AppTopHeaderProps) {
   const pathname = usePathname();
   const router = useRouter();
@@ -29,12 +31,13 @@ export default function AppTopHeader({
 
   return (
     <header className="app-top-header">
-      {/* Mobile Toggle Button */}
+      {/* Sidebar Toggle Button */}
       <button
         type="button"
-        className="mobile-sidebar-toggle"
+        className="header-sidebar-toggle mobile-sidebar-toggle"
         onClick={onToggleSidebar}
         aria-label="Toggle Navigation Menu"
+        title={isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
       >
         ☰
       </button>
