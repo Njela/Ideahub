@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -110,6 +110,9 @@ export default function IdeaPage({ params }: { params: { id: string } }) {
   // Modal States for interactive buttons
   const [attachmentModalOpen, setAttachmentModalOpen] = useState(false);
   const [attachmentForm, setAttachmentForm] = useState({ name: "", url: "", size: "" });
+  const [selectedLocalFile, setSelectedLocalFile] = useState<File | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [linkIssueModalOpen, setLinkIssueModalOpen] = useState(false);
   const [linkIssueForm, setLinkIssueForm] = useState({ id: "", title: "", url: "" });
@@ -179,17 +182,56 @@ export default function IdeaPage({ params }: { params: { id: string } }) {
     }
   };
 
+  const handleFileSelect = (file: File) => {
+    setSelectedLocalFile(file);
+    const sizeStr =
+      file.size > 1024 * 1024
+        ? `${(file.size / (1024 * 1024)).toFixed(1)} MB`
+        : `${Math.round(file.size / 1024)} KB`;
+
+    setAttachmentForm((prev) => ({
+      ...prev,
+      name: prev.name || file.name,
+      size: sizeStr,
+    }));
+  };
+
   const handleAddAttachment = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!idea || !attachmentForm.name) return;
+    if (!idea) return;
+
+    let finalName = attachmentForm.name.trim();
+    if (!finalName && selectedLocalFile) {
+      finalName = selectedLocalFile.name;
+    }
+    if (!finalName) {
+      setModal({ isOpen: true, title: "Please choose a file or enter an attachment label.", type: "alert" });
+      return;
+    }
+
+    let fileUrl = attachmentForm.url.trim();
+
+    if (selectedLocalFile && !fileUrl) {
+      try {
+        fileUrl = await new Promise<string>((resolve) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve((reader.result as string) || "#");
+          reader.readAsDataURL(selectedLocalFile);
+        });
+      } catch (err) {
+        fileUrl = "#";
+      }
+    }
+
     try {
       await addAttachment(idea.id, {
-        name: attachmentForm.name,
-        url: attachmentForm.url || "#",
-        size: attachmentForm.size || "1.2 MB",
+        name: finalName,
+        url: fileUrl || "#",
+        size: attachmentForm.size || (selectedLocalFile ? `${Math.round(selectedLocalFile.size / 1024)} KB` : "1.2 MB"),
       });
       await refreshIdea();
       setAttachmentModalOpen(false);
+      setSelectedLocalFile(null);
       setAttachmentForm({ name: "", url: "", size: "" });
     } catch (err) {
       console.error(err);
@@ -865,11 +907,78 @@ export default function IdeaPage({ params }: { params: { id: string } }) {
       {/* Attachment Modal */}
       {attachmentModalOpen && (
         <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
-          <div style={{ background: "var(--bg)", padding: "24px", borderRadius: "8px", width: "420px", border: "1px solid var(--line)", boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }}>
+          <div style={{ background: "var(--bg)", padding: "24px", borderRadius: "8px", width: "460px", maxWidth: "95vw", border: "1px solid var(--line)", boxShadow: "0 4px 12px rgba(0,0,0,0.15)" }}>
             <h3 style={{ margin: "0 0 16px 0", fontSize: "1.1rem" }}>📎 Add Attachment</h3>
             <form onSubmit={handleAddAttachment}>
+              {/* Local File Dropzone */}
               <div style={{ marginBottom: "16px" }}>
-                <label style={{ display: "block", fontSize: "0.85rem", color: "var(--muted)", marginBottom: "6px" }}>Attachment Name / Label *</label>
+                <label style={{ display: "block", fontSize: "0.85rem", color: "var(--muted)", marginBottom: "6px", fontWeight: 500 }}>
+                  Upload / Drop Local File
+                </label>
+                <div
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setIsDragging(true);
+                  }}
+                  onDragLeave={() => setIsDragging(false)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setIsDragging(false);
+                    if (e.dataTransfer.files?.[0]) {
+                      handleFileSelect(e.dataTransfer.files[0]);
+                    }
+                  }}
+                  onClick={() => fileInputRef.current?.click()}
+                  style={{
+                    border: isDragging ? "2px dashed var(--accent)" : "2px dashed var(--line)",
+                    borderRadius: "6px",
+                    padding: "20px 16px",
+                    textAlign: "center",
+                    cursor: "pointer",
+                    background: isDragging ? "var(--line)" : "transparent",
+                    transition: "all 0.2s ease",
+                  }}
+                >
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    style={{ display: "none" }}
+                    onChange={(e) => {
+                      if (e.target.files?.[0]) {
+                        handleFileSelect(e.target.files[0]);
+                      }
+                    }}
+                  />
+                  {selectedLocalFile ? (
+                    <div>
+                      <div style={{ fontSize: "1.4rem", marginBottom: "4px" }}>📄</div>
+                      <div style={{ fontWeight: 500, fontSize: "0.9rem", color: "var(--fg)" }}>{selectedLocalFile.name}</div>
+                      <div style={{ fontSize: "0.8rem", color: "var(--muted)", marginTop: "2px" }}>
+                        {selectedLocalFile.size > 1024 * 1024
+                          ? `${(selectedLocalFile.size / (1024 * 1024)).toFixed(1)} MB`
+                          : `${Math.round(selectedLocalFile.size / 1024)} KB`}{" "}
+                        • Click or drop to replace
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <div style={{ fontSize: "1.4rem", marginBottom: "4px" }}>📁</div>
+                      <div style={{ fontSize: "0.9rem", fontWeight: 500, color: "var(--fg)" }}>
+                        Drag &amp; drop a file here, or <span style={{ color: "var(--accent)", textDecoration: "underline" }}>browse</span>
+                      </div>
+                      <div style={{ fontSize: "0.8rem", color: "var(--muted)", marginTop: "4px" }}>
+                        Supports PDF, images, docs, and code files
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Attachment Name */}
+              <div style={{ marginBottom: "16px" }}>
+                <label style={{ display: "block", fontSize: "0.85rem", color: "var(--muted)", marginBottom: "6px" }}>
+                  Attachment Name / Label *
+                </label>
                 <input
                   type="text"
                   placeholder="e.g. Q4_Feature_Specification.pdf"
@@ -879,8 +988,12 @@ export default function IdeaPage({ params }: { params: { id: string } }) {
                   style={{ width: "100%", padding: "8px", border: "1px solid var(--line)", borderRadius: "4px", background: "var(--bg)", color: "var(--fg)" }}
                 />
               </div>
-              <div style={{ marginBottom: "16px" }}>
-                <label style={{ display: "block", fontSize: "0.85rem", color: "var(--muted)", marginBottom: "6px" }}>File URL / Drive Link</label>
+
+              {/* Optional Drive / Cloud Link */}
+              <div style={{ marginBottom: "20px" }}>
+                <label style={{ display: "block", fontSize: "0.85rem", color: "var(--muted)", marginBottom: "6px" }}>
+                  File URL / Drive Link <span style={{ fontSize: "0.8rem", fontStyle: "italic" }}>(Optional)</span>
+                </label>
                 <input
                   type="url"
                   placeholder="https://drive.google.com/... or https://..."
@@ -889,20 +1002,14 @@ export default function IdeaPage({ params }: { params: { id: string } }) {
                   style={{ width: "100%", padding: "8px", border: "1px solid var(--line)", borderRadius: "4px", background: "var(--bg)", color: "var(--fg)" }}
                 />
               </div>
-              <div style={{ marginBottom: "20px" }}>
-                <label style={{ display: "block", fontSize: "0.85rem", color: "var(--muted)", marginBottom: "6px" }}>File Size</label>
-                <input
-                  type="text"
-                  placeholder="e.g. 2.4 MB"
-                  value={attachmentForm.size}
-                  onChange={(e) => setAttachmentForm({ ...attachmentForm, size: e.target.value })}
-                  style={{ width: "100%", padding: "8px", border: "1px solid var(--line)", borderRadius: "4px", background: "var(--bg)", color: "var(--fg)" }}
-                />
-              </div>
+
               <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
                 <button
                   type="button"
-                  onClick={() => setAttachmentModalOpen(false)}
+                  onClick={() => {
+                    setAttachmentModalOpen(false);
+                    setSelectedLocalFile(null);
+                  }}
                   style={{ padding: "8px 16px", background: "transparent", border: "1px solid var(--line)", borderRadius: "4px", cursor: "pointer", color: "var(--fg)" }}
                 >
                   Cancel
