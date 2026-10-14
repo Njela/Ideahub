@@ -27,12 +27,6 @@ export default function AppTopHeader({
     }
   };
 
-  const navLinks = [
-    { label: "Home", href: "/", icon: "🏠" },
-    { label: "Archive", href: "/archive", icon: "🗄️" },
-    { label: "Profile", href: "/profile", icon: "👤" },
-  ];
-
   return (
     <header className="app-top-header">
       {/* Mobile Toggle Button */}
@@ -62,27 +56,8 @@ export default function AppTopHeader({
         <span className="shortcut-badge">⌘K</span>
       </div>
 
-      {/* Right Navigation & Avatar Controls */}
+      {/* Right Controls */}
       <div className="top-header-right">
-        <nav className="top-nav-links">
-          {navLinks.map((link) => {
-            const isActive =
-              link.href === "/"
-                ? pathname === "/"
-                : pathname.startsWith(link.href);
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`top-nav-link ${isActive ? "active" : ""}`}
-              >
-                <span className="top-nav-icon">{link.icon}</span>
-                <span>{link.label}</span>
-              </Link>
-            );
-          })}
-        </nav>
-
         {/* Notification Bell */}
         <div className="notification-bell-btn" title="Notifications">
           <span className="bell-icon">🔔</span>

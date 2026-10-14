@@ -20,9 +20,23 @@
   --sidebar-bg: #140a05;
 }
 
-* { 
-  box-sizing: border-box; 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
   font-family: inherit;
+}
+
+html,
+body,
+button,
+input,
+optgroup,
+select,
+textarea,
+pre,
+code {
+  font-family: Consolas, "Courier New", monospace !important;
 }
 
 html, body { 
@@ -34,7 +48,6 @@ html, body {
 body { 
   background: var(--bg); 
   color: var(--fg); 
-  font-family: Consolas, "Courier New", monospace;
   font-size: 14px;
   line-height: 1.5;
 }
@@ -298,35 +311,6 @@ body {
   display: flex;
   align-items: center;
   gap: 20px;
-}
-
-.top-nav-links {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-}
-
-.top-nav-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--muted);
-  text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 500;
-  padding: 6px 0;
-  border-bottom: 2px solid transparent;
-  transition: all 0.2s;
-}
-
-.top-nav-link:hover {
-  color: var(--fg);
-}
-
-.top-nav-link.active {
-  color: var(--accent);
-  border-bottom-color: var(--accent);
-  font-weight: 600;
 }
 
 .notification-bell-btn {
@@ -780,10 +764,6 @@ body {
 }
 
 @media (max-width: 768px) {
-  .top-nav-links {
-    display: none;
-  }
-
   .hero-banner {
     flex-direction: column;
     align-items: flex-start;
