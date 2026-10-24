@@ -31,7 +31,7 @@ COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/.next ./.next
-RUN chown -R nextjs:nodejs /app/prisma
+RUN mkdir -p /var/lib/sqlite && chown -R nextjs:nodejs /app/prisma /var/lib/sqlite
 
 USER nextjs
 EXPOSE 3000
